@@ -1,2 +1,2 @@
 # prtojects
-partfoliya uchun project lar
+partfoliya uchun 4 ta project lar
