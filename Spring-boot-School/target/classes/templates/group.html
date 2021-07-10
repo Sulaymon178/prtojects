@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/group">Group</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link " href="/student">Student</a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+</head>
+<body>
+<div class="container">
+    <div class="row my-3">
+        <div class="col text-right">
+            <button onclick="openModal()" class="btn btn-primary"><i class="fa fa-plus"></i>+Add</button>
+        </div>
+    </div>
+</div>
+<div class="container ">
+    <div class="row ">
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>N</th>
+                    <th>name</th>
+                    <th>Group status</th>
+                    <th>Options</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="group:${groupList}">
+                    <td th:text="${groupList.indexOf(group)+1}"></td>
+                    <td th:text="${group.getName()}"></td>
+                    <td th:text="${group.getGroupStatus()}"></td>
+                    <td>
+                        <form>
+                            <button type="button" class="btn btn-info" onclick="onEdit(value)"
+                                    th:value="${group.getId()}">edit
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="onDelete(value)"
+                                    th:value="${group.getId()}">Delete
+                            </button>
+
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--=========Modal===================================================-->
+
+<div class="modal" tabindex="-1" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button onclick="hideModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            <div class="modal-body">
+                <form id="groupForm" action="/group" method="post" class="p-3">
+                    <input class="form-element" type="hidden" name="id">
+                    <input class="form-element form-control my-2" type="text" name="name" placeholder="Group name">
+                    <select class="form-control form-element" name="groupStatus">
+                        <option selected disabled>statusni tanlang</option>
+                        <option value="STUDY">o`qish jarayoni</option>
+                        <option value="REGISTRATION">ro`yxatga olish</option>
+                        <option value="CLOSED">yopilgan</option>
+                    </select>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideModal()" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="groupForm" class="btn btn-primary">Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script>
+    function openModal() {
+        $("#myModal").show();
+    }
+
+    function hideModal() {
+        $("#myModal").hide();
+    }
+
+    function generateFormData(data) {
+        var a = $('.form-element');
+        Array.from(a).map(item => {
+            item.value = data.object[item.name]
+        })
+    }
+
+    function onEdit(id) {
+        $.ajax({
+            url: '/group/getById',
+            type: 'get',
+            data: {id: id},
+            success: function (data) {
+                openModal();
+                generateFormData(data);
+            }
+        })}
+</script>
+
+<script>
+    function onDelete(id) {
+        $.ajax({
+            url: '/group/' + id,
+            type: 'delete',
+            data: {id: id},
+            success: function (data) {
+                if (data.success) {
+                    document.location.reload(true);
+                } else {
+                    alert("Error in deleting")
+                }
+
+            }
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/group">Group</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link " href="/student">Student</a>
+            </ul>
+            <input id="search-input" class="form-control mr-sm-2" type="search" placeholder="Search"
+                   aria-label="Search">
+            <button onclick="onSearch()" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+        </div>
+    </nav>
+
+</head>
+<body>
+
+
+<div class="container">
+    <div class="row my-3">
+        <div class="col text-right">
+            <button onclick="openModal()" class="btn btn-primary"><i class="fa fa-plus"></i>+Add</button>
+        </div>
+    </div>
+</div>
+<div class="container ">
+    <div class="row ">
+        <div class="col">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>N</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Group</th>
+                    <th>Group status</th>
+                    <th>Passport</th>
+                    <th>Options</th>
+                </tr>
+                </thead>
+                <tbody id="id">
+                <tr th:each="student:${studentList}">
+                    <td th:text="${studentList.indexOf(student)+1}"></td>
+                    <td th:text="${student.getFirstName()}"></td>
+                    <td th:text="${student.getLastName()}"></td>
+                    <td th:text="${student.getGroups().getName()}"></td>
+                    <td th:text="${student.getGroups().getGroupStatus()}"></td>
+                    <td th:text="${student.getPassport().getSerial()+student.getPassport().getNumber()}"></td>
+                    <td>
+                        <form>
+                            <button type="button" onclick=onEdit(value) th:value="${student.getId()}"
+                                    class="btn btn-info">
+                                Edit
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick=onDelete(value)
+                                    th:value="${student.getId()}">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--=========Modal===================================================-->
+
+<div class="modal" tabindex="-1" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button onclick="hideModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            <div class="modal-body">
+                <form id="studentForm" action="/student" method="post" class="p-3">
+                    <input class="form-control my-2 form-element" type="hidden" name="id">
+                    <input class="form-control my-2 form-element" type="text" name="firstName" placeholder="First name">
+                    <input class="form-control my-2 form-element" type="text" name="lastName" placeholder="Last name">
+                    <select name="groupId" class="form-control form-element">
+                        <option selected disabled>grupani tanlang</option>
+                        <option th:each="group:${groupList}" th:value="${group.getId()}"
+                                th:text="${group.getName()}"></option>
+
+                    </select>
+                    <input type="text" class="form-control my-2 form-element" name="serial"
+                           placeholder="Passport serial AA">
+                    <input type="text" class="form-control my-2 form-element" name="number"
+                           placeholder="Passport number">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideModal()" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="studentForm" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    function generateFormData(data) {
+        var a = $('.form-element');
+        Array.from(a).map(item => {
+            item.value = data.object[item.name]
+        })
+    }</script>
+
+<script>
+    function openModal() {
+        $("#myModal").show();
+    }
+</script>
+
+<script>
+    function hideModal() {
+        $("#myModal").hide();
+    }
+</script>
+<script>
+    function onEdit(id) {
+        $.ajax({
+            url: '/student/editById',
+            type: 'get',
+            data: {id: id},
+            success: function (data) {
+                console.log(data)
+                openModal()
+                generateFormData(data)
+            }
+        })
+    }
+
+    function onDelete(id) {
+        $.ajax({
+            url: '/student/' + id,
+            type: 'delete',
+            // data: {id},
+            success: function (data) {
+                if (data.success) {
+                    document.location.reload(true);
+                } else {
+                    alert("Error in deleting")
+                }
+
+            }
+        })
+    }
+
+    function onSearch() {
+        var searchInputValue = $('#search-input').val();
+        $.ajax({
+            url: '/student/search',
+            type: 'get',
+            data: {search: searchInputValue},
+            success: function (data) {
+                console.log(data)
+                var d = [];
+                data.object.map(item => {
+                    d.push('        <tr>\n' +
+                        '                    <td>' + (data.object.indexOf(item) + 1) + '</td> ' +
+                        '                    <td>' + item.firstName + '</td> ' +
+                        '                    <td>' + item.lastName + '</td> ' +
+                        '                    <td>' + item.groups.name + '</td> ' +
+                        '                    <td>' + item.groups.groupStatus + '</td> ' +
+                        '                    <td>' + item.passport.serial + ' ' + item.passport.number + '</td> ' +
+                        '                    <td> ' +
+                        '                        <button class="btn btn-info" onclick="onEdit(' + item.id + ')">edit</button> ' +
+                        '                        <button class="btn btn-danger" onclick="onDelete(' + item.id + ')">delete</button> ' +
+                        '                    </td> ' +
+                        '                </tr>'
+                    );
+                })
+                $("#id").html(d.join(""))
+
+            }
+        })
+
+    }
+</script>
+</body>
+</html>
