@@ -1,0 +1,2 @@
+1. Springda rest api tuzish;
+2.pageable qilish yani googleda search qilganda pastagi 1,2,3,4,5,6... knopkalarni qilish ,har bitta betga nechta malumot yuborish
